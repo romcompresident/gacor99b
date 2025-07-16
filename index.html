@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chance Roller</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+	  background-color: #90ee90;
+    }
+
+    .container {
+      text-align: center;
+      font-size: 52px;
+      font-family: Arial, sans-serif;
+	  max-width: 2000px;
+    }
+
+	.header {
+      font-size: 36px;
+      font-weight: bold;
+      animation: flicker 1s infinite;
+	  margin-bottom: 50px;
+    }
+
+    @keyframes flicker {
+      0%, 100% {
+        color: red;
+      }
+      25% {
+        color: blue;
+      }
+      50% {
+        color: green;
+      }
+      75% {
+        color: yellow;
+      }
+    }
+
+    .name-picker {
+      display: inline-block;
+      margin: 20px;
+	  width: 300px;
+    }
+
+    .name-display {
+      padding: 30px;
+      border: 2px solid #333;
+      border-radius: 8px;
+      margin-top: 10px;
+	  background-color: #f0f0f0;
+    }
+	
+	.buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap; /* Added flex-wrap to wrap the buttons if they overflow */
+      margin-top: 40px;
+    }
+
+    .buttons button,
+    .buttons a {
+      margin: 40px 10px; /* Increase the horizontal margin to add more space */
+      padding: 20px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+	
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">GET YOUR GAME BY MATCHING THREE PICTURES</div>
+
+    <!-- New Roller 4 -->
+    <div class="name-picker">
+      <div class="name-display" id="nameDisplay4">NAME</div>
+      <button onclick="startRandomName(4, ['Alice', 'Caitlyn', 'Callysta', 'Celine', 'Christabel', 'Clarissa', 'Daniel', 'Edbert', 'Evelyn', 'Felicia', 'James', 'Jeniffer', 'Jesslyn', 'Jiang', 'Joshua', 'Kenneth', 'Kevin', 'Olivia', 'Sebastian'])">Start Picker</button>
+      <button onclick="stopRandomName(4)">Stop Picker</button>
+    </div>
+    <br>
+
+    <!-- Roller 1 -->
+    <div class="name-picker">
+      <div class="name-display" id="nameDisplay1">🍇</div>
+      <button onclick="startRandomName(1)">Start Picker</button>
+      <button onclick="stopRandomName(1)">Stop Picker</button>
+    </div>
+    
+    <!-- Roller 2 -->
+    <div class="name-picker">
+      <div class="name-display" id="nameDisplay2">🍇</div>
+      <button onclick="startRandomName(2)">Start Picker</button>
+      <button onclick="stopRandomName(2)">Stop Picker</button>
+    </div>
+    
+    <!-- Roller 3 -->
+    <div class="name-picker">
+      <div class="name-display" id="nameDisplay3">🍇</div>
+      <button onclick="startRandomName(3)">Start Picker</button>
+      <button onclick="stopRandomName(3)">Stop Picker</button>
+    </div>
+  </div>
+
+  <script>
+    const names = [
+      "🍊",
+      "🍉",
+      "🍍",
+    ];
+
+    const redirectionLinks = [
+      "https://kurnigs21.github.io/ruanghukum/"
+    ];
+
+    let intervalIds = {};
+    let selectedCharacters = {};
+    let stoppedCount = 0;
+
+    function startRandomName(pickerNum, customNames = names) {
+      const nameDisplay = document.getElementById(`nameDisplay${pickerNum}`);
+      let currentIndex = Math.floor(Math.random() * customNames.length);
+
+      intervalIds[pickerNum] = setInterval(() => {
+        currentIndex = (currentIndex + 1) % customNames.length;
+        const currentName = customNames[currentIndex];
+        nameDisplay.innerText = currentName;
+      }, 20);
+
+      selectedCharacters[pickerNum] = null;
+    }
+
+    function stopRandomName(pickerNum) {
+      clearInterval(intervalIds[pickerNum]);
+      const nameDisplay = document.getElementById(`nameDisplay${pickerNum}`);
+      const selectedName = nameDisplay.innerText;
+
+      selectedCharacters[pickerNum] = selectedName;
+
+      // Check if Roller 4 is stopped
+      if (pickerNum === 4) {
+        // Reset selected characters for Roller 4
+        selectedCharacters[pickerNum] = null;
+      } else {
+        // Increase the stoppedCount and check if all rollers have been stopped
+        stoppedCount++;
+		
+        if (stoppedCount === 3) {
+         setTimeout(() => { 
+		  if (checkForWin()) {
+            window.open("https://app.Lumi.education/run/J-QSRh", "_blank");
+          } else if (checkForTwoIdentical()) {
+            // Randomly choose a link from the array for redirection
+            const randomLink = redirectionLinks[Math.floor(Math.random() * redirectionLinks.length)];
+            window.open("https://app.Lumi.education/run/3g5L3s", "_blank");
+          } else {
+            window.open("https://kurnigs21.github.io/ruanghukum/", "_blank");
+          }
+
+          // Clear selected characters and reset stoppedCount after win or other conditions
+          selectedCharacters = {};
+          stoppedCount = 0;
+		 }, 2000);
+        }
+      }
+    }
+
+    function checkForWin() {
+      return (
+        selectedCharacters[1] === selectedCharacters[2] &&
+        selectedCharacters[2] === selectedCharacters[3]
+      );
+    }
+
+    function checkForTwoIdentical() {
+      const values = Object.values(selectedCharacters).filter(Boolean);
+      return new Set(values).size === 2;
+    }
+  </script>
+</body>
+</html>
